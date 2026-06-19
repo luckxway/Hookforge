@@ -1,0 +1,287 @@
+
+<h2 class="sr-only">HookForge — AI viral script generator with fixed search input</h2>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --hf-accent:#7F77DD;--hf-accent-light:#EEEDFE;--hf-accent-mid:#AFA9EC;--hf-accent-dark:#3C3489;
+  --hf-pink:#D4537E;--hf-pink-light:#FBEAF0;--hf-teal:#1D9E75;--hf-teal-light:#E1F5EE;
+  --hf-amber:#BA7517;--hf-amber-light:#FAEEDA;
+}
+body{font-family:var(--font-sans)}
+.hf{padding:1.25rem 0}
+.navbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.75rem}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-icon{width:34px;height:34px;border-radius:10px;background:var(--hf-accent);display:flex;align-items:center;justify-content:center}
+.brand-icon i{font-size:18px;color:#EEEDFE}
+.brand-name{font-size:17px;font-weight:500;color:var(--color-text-primary);letter-spacing:-.4px}
+.brand-dot{width:6px;height:6px;border-radius:50%;background:var(--hf-pink);margin-left:2px;display:inline-block;vertical-align:middle}
+.nav-right{display:flex;align-items:center;gap:8px}
+.tier-pill{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:500;padding:4px 11px;border-radius:99px}
+.tier-free{background:var(--color-background-secondary);color:var(--color-text-secondary);border:0.5px solid var(--color-border-secondary)}
+.tier-pro{background:var(--hf-accent-light);color:var(--hf-accent-dark);border:0.5px solid var(--hf-accent-mid)}
+.tier-viral{background:var(--hf-amber-light);color:var(--hf-amber);border:0.5px solid #FAC775}
+.upgrade-btn{font-size:12px;font-weight:500;padding:6px 14px;border-radius:99px;border:none;background:var(--hf-accent);color:#EEEDFE;cursor:pointer;display:flex;align-items:center;gap:5px}
+.upgrade-btn i{font-size:14px}
+.hero-label{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:500;padding:4px 12px;border-radius:99px;background:var(--hf-accent-light);color:var(--hf-accent-dark);border:0.5px solid var(--hf-accent-mid);margin-bottom:.875rem}
+.hero-label i{font-size:13px}
+.hero-heading{font-size:22px;font-weight:500;color:var(--color-text-primary);line-height:1.3;margin-bottom:.5rem;letter-spacing:-.4px}
+.hero-sub{font-size:13px;color:var(--color-text-secondary);line-height:1.6;margin-bottom:1.25rem}
+.platform-strip{display:flex;align-items:center;gap:8px;margin-bottom:1.5rem;flex-wrap:wrap}
+.plat{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:500;padding:4px 11px;border-radius:99px;border:0.5px solid var(--color-border-secondary);color:var(--color-text-secondary);background:var(--color-background-primary)}
+.plat i{font-size:13px}
+.plat-sep{width:3px;height:3px;border-radius:50%;background:var(--color-border-secondary)}
+.input-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:16px;padding:1.25rem;margin-bottom:1rem}
+.input-card-title{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--color-text-secondary);margin-bottom:.875rem;display:flex;align-items:center;gap:5px}
+.input-card-title i{font-size:13px}
+
+.niche-input-wrap{position:relative;margin-bottom:.875rem}
+.niche-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--color-text-secondary);pointer-events:none;line-height:1;display:flex;align-items:center}
+input.niche-field{width:100%;padding-left:34px;padding-right:12px;font-size:13px;border-radius:10px}
+
+.seg-label{font-size:11px;color:var(--color-text-secondary);margin-bottom:6px;letter-spacing:.04em;text-transform:uppercase}
+.tone-wrap{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:.875rem}
+.tone-chip{font-size:12px;padding:5px 13px;border-radius:99px;border:0.5px solid var(--color-border-secondary);cursor:pointer;background:var(--color-background-primary);color:var(--color-text-secondary);transition:all .12s;white-space:nowrap}
+.tone-chip.on{background:var(--hf-accent-light);color:var(--hf-accent-dark);border-color:var(--hf-accent-mid)}
+.vtype-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:1rem}
+.vt{display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 6px;border-radius:10px;border:0.5px solid var(--color-border-tertiary);cursor:pointer;background:var(--color-background-primary);color:var(--color-text-secondary);font-size:11px;text-align:center;transition:all .12s}
+.vt i{font-size:18px}
+.vt.on{background:var(--hf-accent-light);color:var(--hf-accent-dark);border-color:var(--hf-accent-mid)}
+.gen-row{display:flex;gap:8px;align-items:center}
+.gen-main-btn{flex:1;padding:12px;border-radius:10px;border:none;background:var(--hf-accent);color:#EEEDFE;font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:opacity .15s}
+.gen-main-btn:disabled{opacity:.4;cursor:not-allowed}
+.gen-main-btn i{font-size:17px}
+.demo-pill-btn{font-size:11px;padding:8px 14px;border-radius:10px;border:0.5px solid var(--hf-accent-mid);background:var(--hf-accent-light);color:var(--hf-accent-dark);cursor:pointer;font-weight:500;white-space:nowrap}
+.spin{animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.divider{height:0.5px;background:var(--color-border-tertiary);margin:10px 0}
+.stat-trio{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1rem}
+.stat-c{background:var(--color-background-secondary);border-radius:10px;padding:.75rem .875rem}
+.stat-c .lbl{font-size:10px;color:var(--color-text-secondary);margin-bottom:3px;text-transform:uppercase;letter-spacing:.06em}
+.stat-c .val{font-size:20px;font-weight:500;color:var(--color-text-primary)}
+.stat-c .sub{font-size:10px;color:var(--color-text-secondary);margin-top:2px}
+.bar-track{height:3px;border-radius:99px;background:var(--color-border-tertiary);margin-top:5px;overflow:hidden}
+.bar-fill{height:100%;border-radius:99px;transition:width .7s ease}
+.section-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:14px;padding:1rem 1.125rem;margin-bottom:.875rem}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem}
+.section-ttl{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--color-text-secondary);display:flex;align-items:center;gap:5px}
+.section-ttl i{font-size:13px}
+.live-badge{font-size:10px;padding:2px 8px;border-radius:99px;background:var(--hf-teal-light);color:var(--hf-teal);border:0.5px solid #9FE1CB;font-weight:500}
+.hook-item{font-size:13px;color:var(--color-text-primary);line-height:1.55;padding:9px 11px;border-radius:10px;border:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);margin-bottom:6px;display:flex;gap:9px;align-items:flex-start}
+.hook-n{font-size:10px;font-weight:500;color:var(--hf-accent);background:var(--hf-accent-light);width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.vtabs{display:flex;gap:5px;margin-bottom:.875rem}
+.vtab{font-size:11px;padding:4px 13px;border-radius:99px;border:0.5px solid var(--color-border-secondary);cursor:pointer;background:var(--color-background-secondary);color:var(--color-text-secondary);transition:all .12s}
+.vtab.on{background:var(--hf-accent-light);color:var(--hf-accent-dark);border-color:var(--hf-accent-mid)}
+.script-row{margin-bottom:.875rem}
+.script-lbl{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--hf-accent);margin-bottom:4px;display:flex;align-items:center;gap:4px}
+.script-lbl i{font-size:12px}
+.script-txt{font-size:13px;color:var(--color-text-primary);line-height:1.65}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:.875rem;margin-bottom:.875rem}
+.cap-item{font-size:12px;color:var(--color-text-primary);line-height:1.5;padding:7px 10px;border-radius:8px;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);margin-bottom:6px}
+.tag-cloud{display:flex;flex-wrap:wrap;gap:5px}
+.tag{font-size:11px;color:var(--hf-accent-dark);padding:3px 10px;border-radius:99px;background:var(--hf-accent-light);border:0.5px solid var(--hf-accent-mid)}
+.score-badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500;padding:4px 12px;border-radius:99px}
+.score-hot{background:#FAEEDA;color:#633806;border:0.5px solid #FAC775}
+.score-warm{background:#E6F1FB;color:#0C447C;border:0.5px solid #85B7EB}
+.score-cool{background:var(--color-background-secondary);color:var(--color-text-secondary);border:0.5px solid var(--color-border-secondary)}
+.locked-block{text-align:center;padding:1.25rem;border-radius:10px;border:0.5px dashed var(--color-border-secondary);color:var(--color-text-secondary)}
+.locked-block i{font-size:22px;display:block;margin-bottom:6px;color:var(--hf-accent-mid)}
+.locked-block p{font-size:12px;line-height:1.5;margin-bottom:10px}
+.locked-block button{font-size:12px;padding:6px 18px;border-radius:99px;border:none;background:var(--hf-accent);color:#EEEDFE;cursor:pointer;font-weight:500}
+.upgrade-strip{border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:9px;font-size:12px;margin-bottom:.875rem}
+.ustrip-pro{background:var(--hf-accent-light);color:var(--hf-accent-dark);border:0.5px solid var(--hf-accent-mid)}
+.ustrip-viral{background:var(--hf-amber-light);color:var(--hf-amber);border:0.5px solid #FAC775}
+.upgrade-strip button{margin-left:auto;font-size:11px;padding:4px 14px;border-radius:99px;border:none;cursor:pointer;font-weight:500;flex-shrink:0}
+.ustrip-pro button{background:var(--hf-accent);color:#EEEDFE}
+.ustrip-viral button{background:var(--hf-amber);color:#FAEEDA}
+.json-row{display:flex;align-items:center;cursor:pointer;padding:6px 0;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:8px;color:var(--color-text-secondary);font-size:12px;gap:5px;user-select:none}
+.json-row i.ti-code{font-size:14px}
+.json-row .chevron{font-size:13px;margin-left:auto}
+.json-box{font-family:var(--font-mono);font-size:11px;color:var(--color-text-primary);line-height:1.6;background:var(--color-background-secondary);border-radius:8px;padding:.75rem;overflow-x:auto;white-space:pre;max-height:220px;overflow-y:auto;border:0.5px solid var(--color-border-tertiary)}
+.copy-btn{font-size:11px;padding:3px 10px;border-radius:8px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);cursor:pointer;color:var(--color-text-secondary);display:flex;align-items:center;gap:3px}
+.empty-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:14px;padding:2.5rem 1rem;text-align:center;color:var(--color-text-secondary)}
+.empty-card i{font-size:30px;display:block;margin-bottom:.75rem;color:var(--hf-accent-mid)}
+.empty-card p{font-size:13px;line-height:1.65;max-width:300px;margin:0 auto}
+.loading-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:14px;padding:2.5rem 1rem;text-align:center;color:var(--color-text-secondary)}
+.loading-card i{font-size:26px;display:block;margin-bottom:.75rem}
+.loading-card p{font-size:13px}
+.modal-screen{display:none;min-height:480px;background:rgba(0,0,0,.42);border-radius:14px;align-items:center;justify-content:center;margin-top:.875rem}
+.modal-screen.open{display:flex}
+.modal-box{background:var(--color-background-primary);border-radius:16px;border:0.5px solid var(--color-border-secondary);padding:1.5rem;width:340px;max-width:calc(100% - 2rem)}
+.mclose{float:right;background:none;border:none;cursor:pointer;color:var(--color-text-secondary);font-size:19px;line-height:1;margin-top:-2px}
+.modal-icon-row{display:flex;align-items:center;gap:8px;margin-bottom:.375rem}
+.modal-icon-wrap{width:26px;height:26px;border-radius:7px;background:var(--hf-accent);display:flex;align-items:center;justify-content:center}
+.modal-icon-wrap i{font-size:14px;color:#EEEDFE}
+.modal-h{font-size:16px;font-weight:500;color:var(--color-text-primary)}
+.modal-sub{font-size:13px;color:var(--color-text-secondary);margin-bottom:1rem}
+.price-row{display:flex;align-items:baseline;gap:3px;margin-bottom:.875rem}
+.price-big{font-size:30px;font-weight:500;color:var(--color-text-primary)}
+.price-per{font-size:13px;color:var(--color-text-secondary)}
+.benefits{list-style:none;display:flex;flex-direction:column;gap:7px;margin-bottom:1.125rem}
+.benefits li{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--color-text-primary);line-height:1.4}
+.benefits li i{font-size:14px;color:var(--hf-accent);margin-top:1px;flex-shrink:0}
+.cashapp-btn{width:100%;padding:11px;border-radius:10px;border:none;background:#00D632;color:#fff;font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;margin-bottom:7px}
+.cashapp-btn i{font-size:16px}
+.already-btn{width:100%;padding:9px;border-radius:10px;border:0.5px solid var(--color-border-secondary);background:transparent;font-size:13px;color:var(--color-text-secondary);cursor:pointer}
+.trust-line{text-align:center;font-size:11px;color:var(--color-text-secondary);margin-top:9px;display:flex;align-items:center;justify-content:center;gap:4px}
+.trust-line i{font-size:13px;color:var(--hf-teal)}
+.urgency-line{font-size:11px;color:#993C1D;display:flex;align-items:center;justify-content:center;gap:4px;margin-top:5px}
+.urgency-line i{font-size:12px}
+.verify-form{display:flex;flex-direction:column;gap:9px}
+.verify-form label{font-size:11px;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:3px}
+.verify-form input{width:100%;font-size:13px}
+.upload-zone{border:0.5px dashed var(--color-border-secondary);border-radius:10px;padding:.875rem;text-align:center;cursor:pointer;color:var(--color-text-secondary);font-size:12px}
+.upload-zone i{font-size:20px;display:block;margin-bottom:4px}
+.submit-btn{width:100%;padding:10px;border-radius:10px;border:none;background:var(--hf-accent);color:#EEEDFE;font-size:13px;font-weight:500;cursor:pointer}
+.success-wrap{text-align:center;padding:.25rem 0}
+.check-circle{width:50px;height:50px;border-radius:50%;background:var(--hf-teal-light);display:flex;align-items:center;justify-content:center;margin:0 auto .875rem}
+.check-circle i{font-size:24px;color:var(--hf-teal)}
+.success-wrap h2{font-size:16px;font-weight:500;margin-bottom:5px}
+.success-wrap p{font-size:13px;color:var(--color-text-secondary);line-height:1.6;margin-bottom:.875rem}
+.eta-tag{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:4px 13px;border-radius:99px;background:var(--hf-teal-light);color:#085041;border:0.5px solid #9FE1CB;font-weight:500}
+.preview-pro-btn{margin-top:1rem;width:100%;padding:10px;border-radius:10px;border:none;background:var(--hf-accent);color:#EEEDFE;font-size:13px;font-weight:500;cursor:pointer}
+.demo-panel{background:var(--color-background-primary);border-radius:16px;border:0.5px solid var(--color-border-secondary);padding:1.25rem;width:340px;max-width:calc(100% - 2rem)}
+.demo-option{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;border:0.5px solid var(--color-border-secondary);cursor:pointer;margin-bottom:7px;background:var(--color-background-secondary);transition:border-color .12s}
+.demo-option:last-child{margin-bottom:0}
+.demo-option:hover{border-color:var(--hf-accent-mid)}
+.demo-highlight{background:var(--hf-accent-light);border-color:var(--hf-accent-mid)}
+</style>
+
+<div class="hf" id="hf-app">
+  <div class="navbar">
+    <div class="brand">
+      <div class="brand-icon"><i class="ti ti-hook" aria-hidden="true"></i></div>
+      <span class="brand-name">HookForge<span class="brand-dot"></span></span>
+    </div>
+    <div class="nav-right">
+      <div class="tier-pill tier-free" id="nav-tier"><i class="ti ti-user" aria-hidden="true"></i> <span id="nav-tier-txt">Free</span></div>
+      <button class="upgrade-btn" onclick="openUpgrade()"><i class="ti ti-rocket" aria-hidden="true"></i> Go Pro</button>
+    </div>
+  </div>
+
+  <div class="hero-label"><i class="ti ti-sparkles" aria-hidden="true"></i> AI-powered script engine</div>
+  <div class="hero-heading">Turn any niche into<br>viral short-form content.</div>
+  <div class="hero-sub">Generate TikTok, Reels & Shorts scripts that hook in the first second — powered by the same virality patterns used by top creators.</div>
+
+  <div class="platform-strip">
+    <div class="plat"><i class="ti ti-brand-tiktok" aria-hidden="true"></i> TikTok</div>
+    <div class="plat-sep"></div>
+    <div class="plat"><i class="ti ti-brand-instagram" aria-hidden="true"></i> Reels</div>
+    <div class="plat-sep"></div>
+    <div class="plat"><i class="ti ti-brand-youtube" aria-hidden="true"></i> Shorts</div>
+    <div class="plat-sep"></div>
+    <div class="plat" style="color:var(--hf-teal);border-color:#9FE1CB;background:var(--hf-teal-light)"><i class="ti ti-bolt" aria-hidden="true"></i> JSON export</div>
+  </div>
+
+  <div class="input-card">
+    <div class="input-card-title"><i class="ti ti-adjustments-horizontal" aria-hidden="true"></i> Build your script</div>
+
+    <div class="niche-input-wrap">
+      <span class="niche-icon"><i class="ti ti-search" aria-hidden="true"></i></span>
+      <input class="niche-field" type="text" id="niche" placeholder="What's your niche? e.g. fitness, crypto, skincare…" />
+    </div>
+
+    <div class="seg-label" style="margin-bottom:6px">Tone</div>
+    <div class="tone-wrap">
+      <div class="tone-chip on" onclick="pickTone(this,'bold & confident')">Bold</div>
+      <div class="tone-chip" onclick="pickTone(this,'motivational')">Motivational</div>
+      <div class="tone-chip" onclick="pickTone(this,'controversial')">Controversial</div>
+      <div class="tone-chip" onclick="pickTone(this,'educational')">Educational</div>
+      <div class="tone-chip" onclick="pickTone(this,'humorous')">Humorous</div>
+      <div class="tone-chip" onclick="pickTone(this,'storytelling')">Storytelling</div>
+      <div class="tone-chip" onclick="pickTone(this,'urgent')">Urgent</div>
+    </div>
+
+    <div class="seg-label" style="margin-bottom:6px">Format</div>
+    <div class="vtype-row">
+      <div class="vt on" onclick="pickVtype(this,'talking head')"><i class="ti ti-user-circle" aria-hidden="true"></i>Talking head</div>
+      <div class="vt" onclick="pickVtype(this,'voiceover + b-roll')"><i class="ti ti-movie" aria-hidden="true"></i>Voiceover</div>
+      <div class="vt" onclick="pickVtype(this,'hot take')"><i class="ti ti-flame" aria-hidden="true"></i>Hot take</div>
+      <div class="vt" onclick="pickVtype(this,'story time')"><i class="ti ti-book" aria-hidden="true"></i>Story time</div>
+      <div class="vt" onclick="pickVtype(this,'listicle')"><i class="ti ti-list" aria-hidden="true"></i>Listicle</div>
+      <div class="vt" onclick="pickVtype(this,'tutorial')"><i class="ti ti-school" aria-hidden="true"></i>Tutorial</div>
+      <div class="vt" onclick="pickVtype(this,'transformation')"><i class="ti ti-arrows-exchange" aria-hidden="true"></i>Transform</div>
+      <div class="vt" onclick="pickVtype(this,'day in the life')"><i class="ti ti-sun" aria-hidden="true"></i>Day in life</div>
+    </div>
+
+    <div class="gen-row">
+      <button class="gen-main-btn" id="gen-btn" onclick="generate()">
+        <i class="ti ti-bolt" aria-hidden="true"></i> Forge my scripts
+      </button>
+      <button class="demo-pill-btn" onclick="openDemo()"><i class="ti ti-flask" aria-hidden="true"></i> Demo tiers</button>
+    </div>
+  </div>
+
+  <div id="output-area">
+    <div class="empty-card">
+      <i class="ti ti-hook" aria-hidden="true"></i>
+      <p>Your viral script package will appear here. Fill in your niche and hit <strong>Forge my scripts</strong>.</p>
+    </div>
+  </div>
+</div>
+
+<div class="modal-screen" id="modal-screen">
+  <div id="modal-box-wrap"></div>
+</div>
+
+<script>
+let tier='free',tone='bold & confident',vtype='talking head',lastJSON=null,jsonOpen=false;
+function pickTone(el,v){document.querySelectorAll('.tone-chip').forEach(c=>c.className='tone-chip');el.className='tone-chip on';tone=v;}
+function pickVtype(el,v){document.querySelectorAll('.vt').forEach(c=>c.className='vt');el.className='vt on';vtype=v;}
+function setTierUI(t){tier=t;const nb=document.getElementById('nav-tier');const nt=document.getElementById('nav-tier-txt');if(t==='free'){nb.className='tier-pill tier-free';nt.textContent='Free';}else if(t==='pro'){nb.className='tier-pill tier-pro';nt.textContent='Pro';}else{nb.className='tier-pill tier-viral';nt.textContent='Viral+';}}
+function openModal(content){document.getElementById('modal-screen').className='modal-screen open';document.getElementById('hf-app').style.opacity='.35';document.getElementById('modal-box-wrap').innerHTML=content;}
+function closeModal(){document.getElementById('modal-screen').className='modal-screen';document.getElementById('hf-app').style.opacity='1';}
+function openUpgrade(){openModal(`<div class="modal-box"><button class="mclose" onclick="closeModal()" aria-label="Close"><i class="ti ti-x" aria-hidden="true"></i></button><div class="modal-icon-row"><div class="modal-icon-wrap"><i class="ti ti-rocket" aria-hidden="true"></i></div><span class="modal-h">Upgrade to Pro</span></div><div class="modal-sub">Unlock the full HookForge engine.</div><div class="price-row"><span class="price-big">$10</span><span class="price-per">/month</span></div><ul class="benefits"><li><i class="ti ti-check" aria-hidden="true"></i>3 full script versions every generation</li><li><i class="ti ti-check" aria-hidden="true"></i>Advanced viral hooks + deep storytelling</li><li><i class="ti ti-check" aria-hidden="true"></i>Full hashtag sets — 10 to 20 per output</li><li><i class="ti ti-check" aria-hidden="true"></i>Virality score + breakdown analysis</li><li><i class="ti ti-check" aria-hidden="true"></i>Unlimited daily generations</li><li><i class="ti ti-check" aria-hidden="true"></i>Developer JSON export</li></ul><button class="cashapp-btn" onclick="doCashApp()"><i class="ti ti-brand-cashapp" aria-hidden="true"></i> Pay $10 via Cash App</button><button class="already-btn" onclick="showVerify()">I already paid →</button><div class="trust-line"><i class="ti ti-shield-check" aria-hidden="true"></i> Manual activation within 5–30 minutes</div><div class="urgency-line"><i class="ti ti-clock" aria-hidden="true"></i> Locks to $15 next month — grab it now</div></div>`);}
+function doCashApp(){window.open('https://cash.app/$TockuRon/10','_blank');setTimeout(showVerify,900);}
+function showVerify(){document.getElementById('modal-box-wrap').innerHTML=`<div class="modal-box"><button class="mclose" onclick="closeModal()" aria-label="Close"><i class="ti ti-x" aria-hidden="true"></i></button><div class="modal-icon-row"><div class="modal-icon-wrap"><i class="ti ti-check" aria-hidden="true"></i></div><span class="modal-h">Confirm your payment</span></div><div class="modal-sub" style="margin-bottom:.875rem">Takes 30 seconds. We activate manually.</div><div class="verify-form"><div><label>Your email</label><input type="email" id="v-email" placeholder="you@email.com"/></div><div><label>Cash App username</label><input type="text" id="v-tag" placeholder="$yourcashtag"/></div><div><label>Payment screenshot <span style="text-transform:none;letter-spacing:0">(optional)</span></label><div class="upload-zone" onclick="this.querySelector('input').click()"><i class="ti ti-upload" aria-hidden="true"></i>Tap to upload<input type="file" accept="image/*" style="display:none" onchange="document.getElementById('uname').textContent=this.files[0]?.name||''"/></div><div id="uname" style="font-size:11px;color:var(--color-text-secondary);margin-top:3px"></div></div><button class="submit-btn" onclick="submitVerify()">Submit verification</button></div><div class="trust-line" style="margin-top:9px"><i class="ti ti-shield-check" aria-hidden="true"></i> We never share your details</div></div>`;}
+function submitVerify(){const email=document.getElementById('v-email').value.trim();const tag=document.getElementById('v-tag').value.trim();if(!email||!tag){alert('Please fill in your email and Cash App username.');return;}document.getElementById('modal-box-wrap').innerHTML=`<div class="modal-box"><div class="success-wrap"><div class="check-circle"><i class="ti ti-check" aria-hidden="true"></i></div><h2>You're all set!</h2><p>Payment received. We'll activate your Pro account and email you at <strong>${esc(email)}</strong>.</p><div class="eta-tag"><i class="ti ti-clock" aria-hidden="true"></i> Activation in 5–30 minutes</div><div style="font-size:12px;color:var(--color-text-secondary);margin-top:.875rem">Questions? DM <strong>@hookforge</strong> on TikTok or Instagram</div><button class="preview-pro-btn" onclick="closeModal();setTierUI('pro')">Preview Pro features now</button></div></div>`;}
+function openDemo(){openModal(`<div class="demo-panel"><button class="mclose" onclick="closeModal()" aria-label="Close"><i class="ti ti-x" aria-hidden="true"></i></button><div style="margin-bottom:1rem"><div style="font-size:15px;font-weight:500;color:var(--color-text-primary);margin-bottom:3px">Demo mode</div><div style="font-size:12px;color:var(--color-text-secondary)">Preview any tier instantly — no payment needed.</div></div><div class="demo-option" onclick="pickDemo('free')"><div><div style="font-size:13px;font-weight:500;color:var(--color-text-primary)">Free</div><div style="font-size:11px;color:var(--color-text-secondary);margin-top:2px">1 script · 6 hashtags · basic hooks</div></div></div><div class="demo-option demo-highlight" onclick="pickDemo('pro')"><div><div style="font-size:13px;font-weight:500;color:var(--hf-accent-dark)">Pro <span style="font-size:10px;font-weight:400;background:var(--hf-accent-mid);color:#26215C;padding:1px 7px;border-radius:99px;margin-left:4px">$10/mo</span></div><div style="font-size:11px;color:var(--hf-accent);margin-top:2px">3 scripts · 12 hashtags · strong hooks</div></div></div><div class="demo-option" style="background:var(--hf-amber-light);border-color:#FAC775" onclick="pickDemo('viral+')"><div><div style="font-size:13px;font-weight:500;color:#633806">Viral+ <span style="font-size:10px;font-weight:400;background:#FAC775;color:#412402;padding:1px 7px;border-radius:99px;margin-left:4px">$20/mo</span></div><div style="font-size:11px;color:var(--hf-amber);margin-top:2px">Psych hooks · retention loops · 18 tags</div></div></div><div style="font-size:11px;color:var(--color-text-secondary);text-align:center;margin-top:.875rem">No payment required in demo mode.</div></div>`);}
+function pickDemo(t){setTierUI(t);closeModal();}
+async function generate(){
+  const niche=document.getElementById('niche').value.trim();
+  if(!niche){document.getElementById('niche').focus();return;}
+  const btn=document.getElementById('gen-btn');
+  btn.disabled=true;btn.innerHTML='<i class="ti ti-loader spin" aria-hidden="true"></i> Forging…';
+  document.getElementById('output-area').innerHTML='<div class="loading-card"><i class="ti ti-loader spin" aria-hidden="true"></i><p>Forging your viral script package…</p></div>';
+  const rules={free:'TIER FREE: 1 script, simple hook, 3 captions, 6 hashtags. viral_score 40-65.',pro:'TIER PRO: 3 scripts, strong hooks, 6 captions, 12 hashtags, full analysis. viral_score 65-85.','viral+':'TIER VIRAL+: 3 scripts with psychological hooks, retention loops, controversy layering, twists, 7 captions, 18 hashtags, advanced analysis. viral_score 82-97.'};
+  const up={free:'Unlock 3 full scripts, stronger hooks, and viral optimization — Pro is $10/month.',pro:'Upgrade to Viral+ for psychological stacking, open loops, and trend-prediction mode.','viral+':''};
+  const prompt=`You are a viral short-form video script generator. ${rules[tier]} Output ONLY valid JSON, zero markdown, zero backticks.
+Niche: ${niche}. Tone: ${tone}. Video type: ${vtype}. Tier: ${tier}.
+Schema: {"meta":{"niche":"","tone":"","video_type":"","tier":"","viral_score":0},"hooks":["","",""],"scripts":[{"version":1,"hook":"","build_up":"","payoff":"","cta":""}],"captions":[""],"hashtags":[""],"analysis":{"viral_score":0,"reason":""},"monetization":{"tier_used":"${tier}","limits_applied":[],"upgrade_prompt":"${up[tier]}"}}
+${tier==='free'?'scripts:1 item. captions:3. hashtags:6.':tier==='pro'?'scripts:3 items. captions:6. hashtags:12.':'scripts:3 items. captions:7. hashtags:18.'}
+${tier==='viral+'?'Apply: curiosity gaps, open loops, pattern interrupts, social proof, FOMO. Retention loops in build_up. Narrative twist in payoff.':''}
+All content punchy, specific, platform-native for TikTok/Reels/Shorts. Raw JSON only.`;
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
+    const data=await res.json();
+    const raw=data.content.map(i=>i.text||'').join('');
+    const parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());
+    lastJSON=parsed;jsonOpen=false;renderOutput(parsed);
+  }catch(e){document.getElementById('output-area').innerHTML='<div class="empty-card"><i class="ti ti-alert-circle" aria-hidden="true"></i><p>Generation failed — please try again.</p></div>';}
+  btn.disabled=false;btn.innerHTML='<i class="ti ti-bolt" aria-hidden="true"></i> Forge my scripts';
+}
+function renderOutput(d){
+  const score=d.meta?.viral_score||d.analysis?.viral_score||0;
+  const sc=score>=82?'score-hot':score>=65?'score-warm':'score-cool';
+  const scColor=score>=82?'#BA7517':score>=65?'#185FA5':'#5F5E5A';
+  const t=d.monetization?.tier_used||tier;
+  let h='';
+  h+=`<div class="stat-trio"><div class="stat-c"><div class="lbl">Viral score</div><div class="val" style="color:${scColor}">${score}<span style="font-size:13px;color:var(--color-text-secondary)">/100</span></div><div class="bar-track"><div class="bar-fill" style="width:${score}%;background:${scColor}"></div></div></div><div class="stat-c"><div class="lbl">Scripts</div><div class="val">${(d.scripts||[]).length}</div><div class="sub">${t==='free'?'1 of 3 unlocked':'All versions'}</div></div><div class="stat-c"><div class="lbl">Hashtags</div><div class="val">${(d.hashtags||[]).length}</div><div class="sub">${(d.captions||[]).length} captions</div></div></div>`;
+  h+=`<div class="section-card"><div class="section-head"><div class="section-ttl"><i class="ti ti-bolt" aria-hidden="true"></i>Viral hooks</div><div class="live-badge">Live</div></div>${(d.hooks||[]).map((hk,i)=>`<div class="hook-item"><div class="hook-n">${i+1}</div><div>${esc(hk)}</div></div>`).join('')}</div>`;
+  const scripts=d.scripts||[];
+  const vtHtml=scripts.length>1?`<div class="vtabs">${scripts.map((s,i)=>`<div class="vtab${i===0?' on':''}" onclick="sv(${i})" id="vt${i}">Version ${s.version||i+1}</div>`).join('')}</div>`:'';
+  const scards=scripts.map((s,i)=>`<div id="vc${i}" ${i>0?'style="display:none"':''}><div class="script-row"><div class="script-lbl"><i class="ti ti-hook" aria-hidden="true"></i>Hook</div><div class="script-txt">${esc(s.hook||'')}</div></div><div class="divider"></div><div class="script-row"><div class="script-lbl"><i class="ti ti-trending-up" aria-hidden="true"></i>Build-up</div><div class="script-txt">${esc(s.build_up||'')}</div></div><div class="divider"></div><div class="script-row"><div class="script-lbl"><i class="ti ti-stars" aria-hidden="true"></i>Payoff</div><div class="script-txt">${esc(s.payoff||'')}</div></div><div class="divider"></div><div class="script-row"><div class="script-lbl"><i class="ti ti-hand-click" aria-hidden="true"></i>Call to action</div><div class="script-txt">${esc(s.cta||'')}</div></div></div>`).join('');
+  const lockedEl=t==='free'?`<div class="locked-block" style="margin-top:8px"><i class="ti ti-lock" aria-hidden="true"></i><p>2 more script versions available on Pro.</p><button onclick="openUpgrade()">Unlock with Pro →</button></div>`:'';
+  h+=`<div class="section-card"><div class="section-head"><div class="section-ttl"><i class="ti ti-file-text" aria-hidden="true"></i>Scripts</div><div class="score-badge ${sc}"><i class="ti ti-chart-bar" aria-hidden="true"></i>${score}/100</div></div>${vtHtml}${scards}${lockedEl}</div>`;
+  h+=`<div class="two-col"><div class="section-card" style="margin-bottom:0"><div class="section-ttl" style="margin-bottom:.75rem"><i class="ti ti-message" aria-hidden="true"></i>Captions</div>${(d.captions||[]).map(c=>`<div class="cap-item">${esc(c)}</div>`).join('')}</div><div class="section-card" style="margin-bottom:0"><div class="section-ttl" style="margin-bottom:.75rem"><i class="ti ti-hash" aria-hidden="true"></i>Hashtags</div><div class="tag-cloud">${(d.hashtags||[]).map(tg=>`<span class="tag">${esc(tg)}</span>`).join('')}</div></div></div>`;
+  if(d.analysis?.reason)h+=`<div class="section-card" style="margin-top:.875rem"><div class="section-ttl" style="margin-bottom:.75rem"><i class="ti ti-chart-bar" aria-hidden="true"></i>Virality analysis</div><div style="font-size:13px;color:var(--color-text-secondary);line-height:1.65">${esc(d.analysis.reason)}</div></div>`;
+  const up=d.monetization?.upgrade_prompt;
+  if(up)h+=`<div class="upgrade-strip ${t==='free'?'ustrip-pro':'ustrip-viral'}"><i class="ti ti-rocket" aria-hidden="true"></i><span>${esc(up)}</span><button onclick="openUpgrade()">${t==='free'?'Upgrade':'Go Viral+'}</button></div>`;
+  h+=`<div class="section-card"><div class="json-row" onclick="toggleJSON()"><i class="ti ti-code" aria-hidden="true"></i>Raw JSON export<i class="ti ti-chevron-down chevron" id="jchev" aria-hidden="true"></i></div><div id="jwrap" style="display:none"><div style="display:flex;justify-content:flex-end;margin-bottom:6px"><button class="copy-btn" onclick="cpJSON()"><i class="ti ti-copy" aria-hidden="true"></i> Copy</button></div><div class="json-box" id="jbox"></div></div></div>`;
+  document.getElementById('output-area').innerHTML=h;
+  document.getElementById('jbox').textContent=JSON.stringify(d,null,2);
+}
+function sv(i){document.querySelectorAll('[id^="vc"]').forEach((el,n)=>{el.style.display=n===i?'':'none';});document.querySelectorAll('[id^="vt"]').forEach((el,n)=>{el.className='vtab'+(n===i?' on':'');});}
+function toggleJSON(){jsonOpen=!jsonOpen;document.getElementById('jwrap').style.display=jsonOpen?'block':'none';document.getElementById('jchev').className=jsonOpen?'ti ti-chevron-up chevron':'ti ti-chevron-down chevron';}
+function cpJSON(){if(lastJSON)navigator.clipboard.writeText(JSON.stringify(lastJSON,null,2));}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+</script>
